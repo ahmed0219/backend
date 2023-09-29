@@ -51,10 +51,6 @@ salesAgencyRouter.get("/:id", async (req, res) => {
   }
 });
 
-
-
-
-
 // delete the sales agency by id
 
 salesAgencyRouter.delete("/:id", async (req, res) => {
