@@ -51,4 +51,32 @@ salesAgencyRouter.get("/:id", async (req, res) => {
   }
 });
 
+
+
+
+
+// delete the sales agency by id
+
+salesAgencyRouter.delete("/:id", async (req, res) => {
+  try {
+    const salesAgency = await SalesAgency.findByIdAndDelete(req.params.id);
+    if (!salesAgency) return res.status(404).send("SalesAgency not found");
+    res.json({ message: "SalesAgency deleted successfully!" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+//delete all sales agencies
+salesAgencyRouter.delete("/", async (req, res) => {
+  try {
+    const salesAgencies = await SalesAgency.deleteMany();
+    res.json({ message: "All SalesAgencies deleted successfully!" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = salesAgencyRouter;
