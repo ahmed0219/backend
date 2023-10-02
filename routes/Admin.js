@@ -69,21 +69,21 @@ adminRouter.patch("/:id", async (req, res) => {
     res.json({ message: err });
   }
 });
-//adminRouter.patch("/:name", async (req, res) => {
-//  try {
-//    const admin = await Admin.findOneAndUpdate(req.params.name, {
-//      name: req.body.name,
-//      email: req.body.email,
-//    });
-//    if (admin) {
-//      res.json({ message: "Admin updated successfully!" });
-//    } else {
-//      res.status(404).json({ message: "Admin not found!" });
-//    }
-//  } catch (err) {
-//    res.json({ message: err });
-//  }
-//});
+adminRouter.patch("/:name", async (req, res) => {
+  try {
+    const admin = await Admin.findOneAndUpdate(req.params.name, {
+      name: req.body.name,
+      email: req.body.email,
+    });
+    if (admin) {
+      res.json({ message: "Admin updated successfully!" });
+    } else {
+      res.status(404).json({ message: "Admin not found!" });
+    }
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
 
 //delete all
 adminRouter.delete("/", async (req, res) => {
@@ -100,17 +100,17 @@ adminRouter.delete("/", async (req, res) => {
 });
 
 //delete by name
-//adminRouter.delete("/:name", async (req, res) => {
-//  try {
-//    const admin = await Admin.deleteOne({ name: req.params.name });
-//    if (admin) {
-//      res.json({ message: "Admin deleted successfully!" });
-//    } else {
-//      res.status(404).json({ message: "Admin not found!" });
-//    }
-//  } catch (err) {
-//    res.json({ message: err });
-//  }
-//});
+adminRouter.delete("/:name", async (req, res) => {
+  try {
+    const admin = await Admin.deleteOne({ name: req.params.name });
+    if (admin) {
+      res.json({ message: "Admin deleted successfully!" });
+    } else {
+      res.status(404).json({ message: "Admin not found!" });
+    }
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
 
 module.exports = adminRouter;

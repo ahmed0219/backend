@@ -14,10 +14,11 @@ const salesAgencySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    //email: {
-    // type: String,
-    // required: true,
-    //},
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     city: {
       type: String,
       required: true,
@@ -34,6 +35,23 @@ const salesAgencySchema = new mongoose.Schema(
   }
 );
 
-const SalesAgency = mongoose.model("SalesAgency", salesAgencySchema);
+salesAgencySchema.pre(
+  "remove",
+  { document: true, query: false },
+  async function (next) {
+    const adminId = this.admin; // Assuming you have an admin field in SalesAgency
 
+    try {
+      const admin = await Admin.findById(adminId);
+      if (admin) {
+        admin.SalesAgencies.pull(this._id); // Assuming SalesAgencies is an array of SalesAgency IDs in Admin
+        await admin.save();
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+const SalesAgency = mongoose.model("SalesAgency", salesAgencySchema);
 module.exports = SalesAgency;

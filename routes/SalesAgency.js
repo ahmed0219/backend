@@ -11,7 +11,7 @@ salesAgencyRouter.post("/", async (req, res) => {
       address: req.body.address,
       phonenumber: req.body.phonenumber,
       city: req.body.city,
-      // email: req.body.email,
+      email: req.body.email,
       admin: req.body.admin,
     });
 
@@ -55,11 +55,22 @@ salesAgencyRouter.get("/:id", async (req, res) => {
 
 salesAgencyRouter.delete("/:id", async (req, res) => {
   try {
-    const salesAgency = await SalesAgency.findByIdAndDelete(req.params.id);
+    const salesAgency = await SalesAgency.findById(req.params.id);
     if (!salesAgency) return res.status(404).send("SalesAgency not found");
-    res.json({ message: "SalesAgency deleted successfully!" });
-  } catch (err) {
-    console.log(err);
+
+    const adminId = salesAgency.admin;
+    const admin = await Admin.findById(adminId);
+
+    if (!admin) return res.status(404).send("Admin not found");
+
+    admin.SalesAgencies.pull(salesAgency._id);
+    await admin.save();
+
+    await SalesAgency.findByIdAndRemove(req.params.id);
+
+    res.json({ message: "SalesAgency deleted successfully" });
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Server Error");
   }
 });

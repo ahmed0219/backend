@@ -11,12 +11,18 @@ const adminSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    SalesAgencies: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "SalesAgency" },
+    ],
   },
+
   {
     timestamps: true,
   }
 );
 
 const Admin = mongoose.model("Admin", adminSchema);
+
+
 
 module.exports = Admin;

@@ -18,12 +18,14 @@ const retailerSchema = new mongoose.Schema({
     required: true,
   },
 
-  RechargeCardStack: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "RechargeCardStack",
-    },
-  ],
+  Admin: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Admin",
+  },
+  SalesAgency: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "SalesAgency",
+  },
 });
 
 const Retailer = mongoose.model("Retailer", retailerSchema);
