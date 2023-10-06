@@ -28,6 +28,7 @@ const salesAgencySchema = new mongoose.Schema(
       ref: "Admin",
       rquired: true,
     },
+    Retailer: [{ type: mongoose.Schema.Types.ObjectId, ref: "Retailer" }],
   },
 
   {

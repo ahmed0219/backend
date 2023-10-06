@@ -75,6 +75,28 @@ salesAgencyRouter.delete("/:id", async (req, res) => {
   }
 });
 
+//modify the sales agency by id
+salesAgencyRouter.patch("/:id", async (req, res) => {
+  try {
+    const updatedSalesAgency = await SalesAgency.findOneAndUpdate(
+      { _id: req.params.id }, // Assuming id is the unique identifier for your SalesAgency
+      {
+        $set: {
+          name: req.body.name,
+          address: req.body.address,
+          phonenumber: req.body.phonenumber,
+          email: req.body.email,
+          city: req.body.city,
+        }
+      },
+      { new: true } // This option returns the modified document rather than the original
+    );
+    res.json(updatedSalesAgency);    
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
+
 //delete all sales agencies
 salesAgencyRouter.delete("/", async (req, res) => {
   try {

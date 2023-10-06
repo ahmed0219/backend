@@ -14,15 +14,14 @@ const adminSchema = new mongoose.Schema(
     SalesAgencies: [
       { type: mongoose.Schema.Types.ObjectId, ref: "SalesAgency" },
     ],
-  },
 
+    Retailer: [{ type: mongoose.Schema.Types.ObjectId, ref: "Retailer" }],
+  },
   {
     timestamps: true,
   }
 );
 
 const Admin = mongoose.model("Admin", adminSchema);
-
-
 
 module.exports = Admin;
