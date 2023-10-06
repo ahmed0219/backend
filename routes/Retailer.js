@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Admin = require("../models/Admin");
 const SalesAgency = require("../models/SalesAgency");
 const Retailer = require("../models/Retailer");
-//create retailer
+
 RetailerRouter.post("/", async (req, res) => {
   try {
     const retailer = await Retailer.create({
@@ -26,7 +26,7 @@ RetailerRouter.post("/", async (req, res) => {
     } else if (adminFound) {
       adminFound.Retailer.push(retailer);
       await adminFound.save();
-      console.log(adminFound);
+      
     } else if (salesAgencyFound) {
       salesAgencyFound.Retailer.push(retailer);
 
@@ -39,7 +39,7 @@ RetailerRouter.post("/", async (req, res) => {
   }
 });
 
-// get all retailers
+
 
 RetailerRouter.get("/", async (req, res) => {
   try {
@@ -59,7 +59,7 @@ RetailerRouter.get("/:id", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-//get retailer by id
+
 RetailerRouter.delete("/:id", async (req, res) => {
   try {
     const retailer = await Retailer.findById(req.params.id);
@@ -92,7 +92,7 @@ RetailerRouter.delete("/:id", async (req, res) => {
   }
 });
 
-//update retailer by id
+
 RetailerRouter.patch("/:id", async (req, res) => {
   try {
     const updateSalesAgency = await SalesAgency.findOneAndUpdate(
@@ -113,5 +113,17 @@ RetailerRouter.patch("/:id", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+RetailerRouter.delete("/", async (req, res) => {
+  try {
+    await Retailer.deleteMany();
+    res.json({ message: "All Retailers deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
+
+
 
 module.exports = RetailerRouter;

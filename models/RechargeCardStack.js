@@ -1,33 +1,33 @@
 const mongoose = require("mongoose");
 const RechargeCardStackSchema = new mongoose.Schema(
   {
-    Amount: {
+    amount: {
       type: Number,
       required: true,
     },
-    Quantity: {
+    quantity: {
       type: Number,
       required: true,
     },
 
-    Status: {
+    status: {
       type: String,
       required: true,
     },
 
-    Retailer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Retailer",
-    },
     SalesAgency: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SalesAgency",
     },
   },
   {
+    Retailer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Retailer",
+    },
     timestamps: true,
   }
 );
 
-const RechargeCardsStack = mongoose.model("SalesAgency", salesAgencySchema);
+const RechargeCardsStack = mongoose.model("RechargeCardsStack", RechargeCardStackSchema);
 module.exports = RechargeCardsStack;

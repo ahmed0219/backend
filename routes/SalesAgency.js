@@ -3,7 +3,6 @@ const SalesAgency = require("../models/SalesAgency");
 const Admin = require("../models/Admin");
 const salesAgencyRouter = express.Router();
 
-//post
 salesAgencyRouter.post("/", async (req, res) => {
   try {
     const salesAgency = await SalesAgency.create({
@@ -15,7 +14,7 @@ salesAgencyRouter.post("/", async (req, res) => {
       admin: req.body.admin,
     });
 
-    // find the admin
+  
     const adminFound = await Admin.findById(req.body.admin);
     if (!adminFound) return res.status(404).send("Admin not found");
     adminFound.SalesAgencies.push(salesAgency);
@@ -28,7 +27,6 @@ salesAgencyRouter.post("/", async (req, res) => {
   }
 });
 
-// get all sales agencies
 salesAgencyRouter.get("/", async (req, res) => {
   try {
     const salesAgencies = await SalesAgency.find();
@@ -39,7 +37,7 @@ salesAgencyRouter.get("/", async (req, res) => {
   }
 });
 
-// get the sales agency by id
+
 salesAgencyRouter.get("/:id", async (req, res) => {
   try {
     const salesAgency = await SalesAgency.findById(req.params.id);
@@ -51,7 +49,7 @@ salesAgencyRouter.get("/:id", async (req, res) => {
   }
 });
 
-// delete the sales agency by id
+
 
 salesAgencyRouter.delete("/:id", async (req, res) => {
   try {
@@ -75,7 +73,7 @@ salesAgencyRouter.delete("/:id", async (req, res) => {
   }
 });
 
-//modify the sales agency by id
+
 salesAgencyRouter.patch("/:id", async (req, res) => {
   try {
     const updatedSalesAgency = await SalesAgency.findOneAndUpdate(
@@ -89,7 +87,7 @@ salesAgencyRouter.patch("/:id", async (req, res) => {
           city: req.body.city,
         }
       },
-      { new: true } // This option returns the modified document rather than the original
+      { new: true } 
     );
     res.json(updatedSalesAgency);    
   } catch (err) {

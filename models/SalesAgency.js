@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const RechargeCardsStack = require("./RechargeCardStack");
 
 const salesAgencySchema = new mongoose.Schema(
   {
@@ -29,11 +30,18 @@ const salesAgencySchema = new mongoose.Schema(
       rquired: true,
     },
     Retailer: [{ type: mongoose.Schema.Types.ObjectId, ref: "Retailer" }],
+    RechargeCardStack: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "RechargeCardStack",
+      },
+    ],
   },
 
   {
     timestamps: true,
-  }
+  },
+ 
 );
 
 salesAgencySchema.pre(
