@@ -2,8 +2,6 @@ const express = require("express");
 const Admin = require("../models/Admin");
 const adminRouter = express.Router();
 
-//post
-
 adminRouter.post("/", async (req, res) => {
   try {
     const admin = await Admin.create({
@@ -15,7 +13,22 @@ adminRouter.post("/", async (req, res) => {
     res.json({ message: err });
   }
 });
-//get all admins
+adminRouter.get("/admin/:name", async (req, res) => {
+  const name = req.params.name;
+
+  try {
+    const admin = await Admin.findOne({ name });
+
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    res.json(admin);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 adminRouter.get("/", async (req, res) => {
   try {
     const admins = await Admin.find();
@@ -25,7 +38,6 @@ adminRouter.get("/", async (req, res) => {
   }
 });
 
-//get by id
 adminRouter.get("/:id", async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.id);
@@ -39,7 +51,6 @@ adminRouter.get("/:id", async (req, res) => {
   }
 });
 
-//delete
 adminRouter.delete("/:id", async (req, res) => {
   try {
     const admin = await Admin.findByIdAndDelete(req.params.id);
@@ -53,7 +64,6 @@ adminRouter.delete("/:id", async (req, res) => {
   }
 });
 
-//update
 adminRouter.patch("/:id", async (req, res) => {
   try {
     const admin = await Admin.findByIdAndUpdate(req.params.id, {
@@ -69,23 +79,7 @@ adminRouter.patch("/:id", async (req, res) => {
     res.json({ message: err });
   }
 });
-adminRouter.patch("/:name", async (req, res) => {
-  try {
-    const admin = await Admin.findOneAndUpdate(req.params.name, {
-      name: req.body.name,
-      email: req.body.email,
-    });
-    if (admin) {
-      res.json({ message: "Admin updated successfully!" });
-    } else {
-      res.status(404).json({ message: "Admin not found!" });
-    }
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
 
-//delete all
 adminRouter.delete("/", async (req, res) => {
   try {
     const admin = await Admin.deleteMany();
@@ -93,20 +87,6 @@ adminRouter.delete("/", async (req, res) => {
       res.json({ message: "Admins deleted successfully!" });
     } else {
       res.status(404).json({ message: "Admins not found!" });
-    }
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
-
-//delete by name
-adminRouter.delete("/:name", async (req, res) => {
-  try {
-    const admin = await Admin.deleteOne({ name: req.params.name });
-    if (admin) {
-      res.json({ message: "Admin deleted successfully!" });
-    } else {
-      res.status(404).json({ message: "Admin not found!" });
     }
   } catch (err) {
     res.json({ message: err });

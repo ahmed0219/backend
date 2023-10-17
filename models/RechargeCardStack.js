@@ -29,5 +29,8 @@ const RechargeCardStackSchema = new mongoose.Schema(
   }
 );
 
-const RechargeCardsStack = mongoose.model("RechargeCardsStack", RechargeCardStackSchema);
+const RechargeCardsStack = mongoose.model(
+  "RechargeCardsStack",
+  RechargeCardStackSchema
+);
 module.exports = RechargeCardsStack;
