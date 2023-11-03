@@ -11,7 +11,11 @@ const adminSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    SalesAgencies: [
+    password: {
+      type: String,
+      required: true,
+    },
+    salesAgencies: [
       { type: mongoose.Schema.Types.ObjectId, ref: "SalesAgency" },
     ],
 

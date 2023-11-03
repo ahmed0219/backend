@@ -1,31 +1,48 @@
 const express = require("express");
 const Admin = require("../models/Admin");
 const adminRouter = express.Router();
+const bcrypt = require("bcrypt");
 
-adminRouter.post("/", async (req, res) => {
+adminRouter.post("/register", async (req, res) => {
   try {
-    const admin = await Admin.create({
-      name: req.body.name,
-      email: req.body.email,
-    });
-    res.json(admin);
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
-adminRouter.get("/admin/:name", async (req, res) => {
-  const name = req.params.name;
+    const { name, email, password } = req.body;
 
-  try {
-    const admin = await Admin.findOne({ name });
+    const findUser = await Admin.findOne({ email });
 
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
+    if (findUser) {
+      console.log(email);
+      return res.status(400).send("Email already registered");
     }
 
-    res.json(admin);
-  } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error" });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await Admin.create({ name, email, password: hashedPassword });
+
+    res.status(201).send("Registered successfully!");
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+});
+
+adminRouter.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const findUser = await Admin.findOne({ email });
+
+    if (!findUser) {
+      return res.status(400).send("Wrong email or password !");
+    }
+
+    const passwordMatch = await bcrypt.compare(password, findUser.password);
+
+    if (passwordMatch) {
+      res.status(200).send("Logged in successfully!");
+    } else {
+      res.status(400).send("Wrong email or password !");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: err.message });
   }
 });
 

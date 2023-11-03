@@ -17,6 +17,10 @@ const retailerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  password:{
+    type:String,
+    required:true,
+  },
 
   Admin: {
     type: mongoose.Schema.Types.ObjectId,

@@ -2,6 +2,73 @@ const express = require("express");
 const SalesAgency = require("../models/SalesAgency");
 const Admin = require("../models/Admin");
 const salesAgencyRouter = express.Router();
+const bcrypt = require("bcrypt");
+
+salesAgencyRouter.post("/register", async (req, res) => {
+  try {
+    const { name, address, phonenumber, email, city, admin, password } = req.body;
+
+    const findUser = await SalesAgency.findOne({ email });
+
+    if (findUser) {
+      return res.status(400).send("Email already registered");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const salesAgency = new SalesAgency({
+      name,
+      address,
+      phonenumber,
+      email,
+      city,
+      admin,
+      password: hashedPassword,
+    });
+
+    await salesAgency.save();
+
+    const adminFound = await Admin.findById(admin);
+
+    if (!adminFound) {
+      return res.status(404).send("Admin not found");
+    }
+
+    adminFound.salesAgencies.push(salesAgency);
+
+    await adminFound.save();
+
+    // Respond with a 201 status and a success message
+    res.status(201).send("Registered successfully!");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Internal server error" });
+  }
+});
+
+
+salesAgencyRouter.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const findUser = await SalesAgency.findOne({ email });
+
+    if (!findUser) {
+      return res.status(400).send("Wrong email or password !");
+    }
+
+    const passwordMatch = await bcrypt.compare(password, findUser.password);
+
+    if (passwordMatch) {
+      res.status(200).send("Logged in successfully!");
+    } else {
+      res.status(400).send("Wrong email or password !");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: err.message });
+  }
+});
 
 salesAgencyRouter.post("/", async (req, res) => {
   try {
@@ -14,7 +81,6 @@ salesAgencyRouter.post("/", async (req, res) => {
       admin: req.body.admin,
     });
 
-  
     const adminFound = await Admin.findById(req.body.admin);
     if (!adminFound) return res.status(404).send("Admin not found");
     adminFound.SalesAgencies.push(salesAgency);
@@ -37,7 +103,6 @@ salesAgencyRouter.get("/", async (req, res) => {
   }
 });
 
-
 salesAgencyRouter.get("/:id", async (req, res) => {
   try {
     const salesAgency = await SalesAgency.findById(req.params.id);
@@ -48,8 +113,6 @@ salesAgencyRouter.get("/:id", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-
-
 
 salesAgencyRouter.delete("/:id", async (req, res) => {
   try {
@@ -73,7 +136,6 @@ salesAgencyRouter.delete("/:id", async (req, res) => {
   }
 });
 
-
 salesAgencyRouter.patch("/:id", async (req, res) => {
   try {
     const updatedSalesAgency = await SalesAgency.findOneAndUpdate(
@@ -85,11 +147,11 @@ salesAgencyRouter.patch("/:id", async (req, res) => {
           phonenumber: req.body.phonenumber,
           email: req.body.email,
           city: req.body.city,
-        }
+        },
       },
-      { new: true } 
+      { new: true }
     );
-    res.json(updatedSalesAgency);    
+    res.json(updatedSalesAgency);
   } catch (err) {
     res.json({ message: err });
   }
