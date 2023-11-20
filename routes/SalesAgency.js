@@ -1,4 +1,4 @@
-const express = require("express");
+ const express = require("express");
 const SalesAgency = require("../models/SalesAgency");
 const Admin = require("../models/Admin");
 const salesAgencyRouter = express.Router();
@@ -6,7 +6,8 @@ const bcrypt = require("bcrypt");
 
 salesAgencyRouter.post("/register", async (req, res) => {
   try {
-    const { name, address, phonenumber, email, city, admin, password } = req.body;
+    const { name, address, phonenumber, email, city, admin, password } =
+      req.body;
 
     const findUser = await SalesAgency.findOne({ email });
 
@@ -25,18 +26,21 @@ salesAgencyRouter.post("/register", async (req, res) => {
       admin,
       password: hashedPassword,
     });
-
-    await salesAgency.save();
-
+console.log(salesAgency);
     const adminFound = await Admin.findById(admin);
+    
 
     if (!adminFound) {
       return res.status(404).send("Admin not found");
     }
 
-    adminFound.salesAgencies.push(salesAgency);
+    else{
+      adminFound.salesAgencies.push(salesAgency._id);
+      await salesAgency.save();
+      await adminFound.save();
+      
+    }
 
-    await adminFound.save();
 
     // Respond with a 201 status and a success message
     res.status(201).send("Registered successfully!");
@@ -45,6 +49,7 @@ salesAgencyRouter.post("/register", async (req, res) => {
     res.status(500).send({ message: "Internal server error" });
   }
 });
+
 
 
 salesAgencyRouter.post("/login", async (req, res) => {
@@ -70,28 +75,7 @@ salesAgencyRouter.post("/login", async (req, res) => {
   }
 });
 
-salesAgencyRouter.post("/", async (req, res) => {
-  try {
-    const salesAgency = await SalesAgency.create({
-      name: req.body.name,
-      address: req.body.address,
-      phonenumber: req.body.phonenumber,
-      city: req.body.city,
-      email: req.body.email,
-      admin: req.body.admin,
-    });
 
-    const adminFound = await Admin.findById(req.body.admin);
-    if (!adminFound) return res.status(404).send("Admin not found");
-    adminFound.SalesAgencies.push(salesAgency);
-
-    await adminFound.save();
-    res.json(salesAgency);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Server Error");
-  }
-});
 
 salesAgencyRouter.get("/", async (req, res) => {
   try {

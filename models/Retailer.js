@@ -1,36 +1,36 @@
 const mongoose = require("mongoose");
 
 const retailerSchema = new mongoose.Schema({
-  Name: {
+  name: {
     type: String,
     required: true,
   },
-  Address: {
+  address: {
     type: String,
     required: true,
   },
-  PhoneNumber: {
+  phoneNumber: {
     type: String,
     required: true,
   },
-  Email: {
+  email: {
     type: String,
     required: true,
   },
-  password:{
-    type:String,
-    required:true,
+  password: {
+    type: String,
+    required: true,
   },
 
-  Admin: {
+  admin: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Admin",
   },
-  SalesAgency: {
+  salesAgency: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "SalesAgency",
   },
-  RechargeCardStack: [
+  rechargeCardStack: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "RechargeCardStack",

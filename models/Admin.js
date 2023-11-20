@@ -15,9 +15,7 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    salesAgencies: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "SalesAgency" },
-    ],
+    salesAgencies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SalesAgency' }],
 
     Retailer: [{ type: mongoose.Schema.Types.ObjectId, ref: "Retailer" }],
   },

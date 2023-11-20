@@ -6,51 +6,81 @@ const SalesAgency = require("../models/SalesAgency");
 const Retailer = require("../models/Retailer");
 const bcrypt = require("bcrypt");
 
-RetailerRouter.post("/register", async (req, res) => {
+// For Admin Registration
+RetailerRouter.post("/register/admin", async (req, res) => {
   try {
-    const { Email, password } = req.body;
+    const { name, address, phoneNumber, email, admin, password } = req.body;
 
-    const findUser = await Retailer.findOne({ Email });
-
+    const findUser = await Retailer.findOne({ email });
     if (findUser) {
-      console.log(Email);
       return res.status(400).send("Email already registered");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const retailer = await Retailer.create({
-      Name: req.body.Name,
-      Address: req.body.Address,
-      PhoneNumber: req.body.PhoneNumber,
-      Email: req.body.Email,
-      Admin: req.body.Admin,
-      SalesAgency: req.body.SalesAgency,
+    const retailer = new Retailer({
+      name,
+      address,
+      phoneNumber,
+      email,
+      admin,
       password: hashedPassword,
     });
-    const adminFound = await Admin.findById(req.body.Admin);
-    const salesAgencyFound = await Retailer.findById(req.body.SalesAgency);
 
-    if (!adminFound && !salesAgencyFound) {
-      return res.status(404).send("Admin not found and Sales Agency not found");
-    } else if (adminFound && salesAgencyFound) {
-      return res.status(404).send("Provide only one Admin or Sales Agency");
-    } else if (adminFound) {
-      adminFound.Retailer.push(retailer);
-      await adminFound.save();
-    } else if (salesAgencyFound) {
-      salesAgencyFound.Retailer.push(retailer);
-
-      await salesAgencyFound.save();
+    const adminFound = await Admin.findById(admin);
+    if (!adminFound) {
+      return res.status(404).send("Admin not found");
     }
 
-    res.json(retailer);
+    adminFound.Retailer.push(retailer._id);
+    await retailer.save();
+    await adminFound.save();
 
     res.status(201).send("Registered successfully!");
   } catch (err) {
-    console.log(err);
-    res.status(500).send({ message: err.message });
+    console.error(err);
+    res.status(500).send({ message: "Internal server error" });
   }
 });
+
+// For Sales Agency Registration
+RetailerRouter.post("/register/salesagency", async (req, res) => {
+  try {
+    const { name, address, phoneNumber, email, salesAgency, password } =
+      req.body;
+
+    const findUser = await Retailer.findOne({ email });
+    if (findUser) {
+      return res.status(400).send("Email already registered");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const retailer = new Retailer({
+      name,
+      address,
+      phoneNumber,
+      email,
+      salesAgency,
+      password: hashedPassword,
+    });
+
+    const salesAgencyFound = await SalesAgency.findById(salesAgency);
+    if (!salesAgencyFound) {
+      return res.status(404).send("Sales Agency not found");
+    }
+
+    salesAgencyFound.Retailer.push(retailer._id);
+    await retailer.save();
+    await salesAgencyFound.save();
+
+    res.status(201).send("Registered successfully!");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Internal server error" });
+  }
+});
+
+module.exports = RetailerRouter;
+
 RetailerRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;

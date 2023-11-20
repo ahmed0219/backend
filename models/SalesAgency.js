@@ -29,7 +29,10 @@ const salesAgencySchema = new mongoose.Schema(
       ref: "Admin",
       rquired: true,
     },
-    Retailer: [{ type: mongoose.Schema.Types.ObjectId, ref: "Retailer" }],
+    Retailer: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Retailer" },
+    ],
     RechargeCardStack: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -40,8 +43,7 @@ const salesAgencySchema = new mongoose.Schema(
 
   {
     timestamps: true,
-  },
- 
+  }
 );
 
 salesAgencySchema.pre(
